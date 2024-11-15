@@ -18,10 +18,6 @@ const updatedRfiCellData = await processTestingSheet(
   "Testing"
 );
 
-const testData = [
-  ["Test Data 1", "Test Data 2"],
-  ["Test Data 3", "Test Data 4"],
-];
 updateRfiSpreadsheet(
   client,
   userId,
