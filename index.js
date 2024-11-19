@@ -2,15 +2,18 @@ import { getGraphClient } from "./lib/msAuth.js";
 import { processTestingSheet, updateRfiSpreadsheet } from "./lib/sheets.js";
 import dotenv from "dotenv";
 
+// load the environment variables
 dotenv.config();
 
+// Create a Graph client with caching disabled
 const client = await getGraphClient({ cache: false });
 
-// Replace with your OneDrive file ID, sheet name, and user ID
+// Workbook ID and User ID
 const workbookId = process.env.WORKBOOK_ID;
 const userId = process.env.USER_ID;
 
-// Retrieve existing data only once
+// Process the testing sheet and return the updated RFI cell data
+// Incliudes the
 const updatedRfiCellData = await processTestingSheet(
   client,
   userId,
@@ -18,6 +21,7 @@ const updatedRfiCellData = await processTestingSheet(
   "Testing"
 );
 
+// Update the RFI spreadsheet with the updated RFI cell data
 updateRfiSpreadsheet(
   client,
   userId,
