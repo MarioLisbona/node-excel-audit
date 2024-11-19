@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const client = await getGraphClient();
+const client = await getGraphClient({ cache: false });
 
 // Replace with your OneDrive file ID, sheet name, and user ID
 const workbookId = process.env.WORKBOOK_ID;
