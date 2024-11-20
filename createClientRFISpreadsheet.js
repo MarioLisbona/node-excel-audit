@@ -3,7 +3,8 @@ import { getGraphClient } from "./lib/msAuth.js";
 // Function to copy a worksheet to a new spreadsheet
 export const copyWorksheetToNewSpreadsheet = async (
   sourceSpreadsheetId,
-  worksheetName,
+  sourceWorksheetName,
+  newWorksheetName,
   newSpreadsheetName
 ) => {
   const client = await getGraphClient();
@@ -26,7 +27,7 @@ export const copyWorksheetToNewSpreadsheet = async (
       `/drives/${process.env.ONEDRIVE_ID}/items/${newSpreadsheetId}/workbook/worksheets`
     )
     .post({
-      name: process.env.WORKSHEET_NAME, // Name for the new worksheet
+      name: newWorksheetName, // Name for the new worksheet
     });
 
   // Step 5: Delete "Sheet1" in the new spreadsheet
@@ -39,7 +40,7 @@ export const copyWorksheetToNewSpreadsheet = async (
   // Step 3: Get the data from the existing worksheet
   const existingData = await client
     .api(
-      `/drives/${process.env.ONEDRIVE_ID}/items/${sourceSpreadsheetId}/workbook/worksheets/${worksheetName}/usedRange`
+      `/drives/${process.env.ONEDRIVE_ID}/items/${sourceSpreadsheetId}/workbook/worksheets/${sourceWorksheetName}/usedRange`
     )
     .get();
 
@@ -48,25 +49,26 @@ export const copyWorksheetToNewSpreadsheet = async (
     throw new Error("No data found in the existing worksheet.");
   }
 
-  // // Step 4: Write the data to the new spreadsheet in the "Sheet1"
-  // const rangeAddress = `Sheet1!A1`; // Specify the starting cell for the data
-  // await client
-  //   .api(
-  //     `/drives/${process.env.ONEDRIVE_ID}/items/${newSpreadsheetId}/workbook/worksheets('Sheet1')/range(address='${rangeAddress}')`
-  //   )
-  //   .patch({
-  //     values: existingData.values, // Write the existing data to the new worksheet
-  //   });
+  // Step 7: Write the data to the newly created worksheet
+  const newRangeAddress = `${newWorksheetName}!A1`; // Specify the starting cell for the data
 
-  // // Step 7: Write the data to the newly created worksheet
-  // const newRangeAddress = `${process.env.WORKSHEET_NAME}!A1`; // Specify the starting cell for the data
-  // await client
-  //   .api(
-  //     `/drives/${process.env.ONEDRIVE_ID}/items/${newSpreadsheetId}/workbook/worksheets('${newWorksheet.id}')/range(address='${newRangeAddress}')`
-  //   )
-  //   .patch({
-  //     values: existingData.values, // Write the existing data to the new worksheet
-  //   });
+  // Filter out empty rows
+  const filteredData = existingData.values.filter((row) =>
+    row.some((cell) => cell !== "")
+  );
+
+  // Log the new range address and the filtered data being sent
+  console.log(`Writing to range: ${newRangeAddress}`);
+  console.log("Data to write:", filteredData);
+  console.log("New worksheet ID:", newWorksheet.id);
+
+  await client
+    .api(
+      `/drives/${process.env.ONEDRIVE_ID}/items/${newSpreadsheetId}/workbook/worksheets('${newWorksheet.id}')/range(address='${newRangeAddress}')`
+    )
+    .patch({
+      values: filteredData, // Write the filtered data to the new worksheet
+    });
 
   return newSpreadsheetId;
 };
@@ -74,6 +76,7 @@ export const copyWorksheetToNewSpreadsheet = async (
 // Call the function
 copyWorksheetToNewSpreadsheet(
   process.env.SOURCE_SPREADSHEET_ID,
-  "Sheet1", // Assuming the original sheet is named "Sheet1"
+  process.env.SOURCE_WORKSHEET_NAME,
+  process.env.NEW_WORKSHEET_NAME,
   process.env.NEW_SPREADSHEET_NAME
 );
