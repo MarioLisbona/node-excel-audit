@@ -1,5 +1,18 @@
 import { getGraphClient } from "./lib/msAuth.js";
 
+// Function to calculate the cell range based on the data array
+const getCellRange = (data) => {
+  const startCell = "A1"; // Starting cell
+  const numRows = data.length; // Number of rows in the data
+  const numCols = data[0] ? data[0].length : 0; // Number of columns in the first row
+
+  // Calculate the end cell based on the number of rows and columns
+  const endCell =
+    String.fromCharCode("A".charCodeAt(0) + numCols - 1) + numRows;
+
+  return `${startCell}:${endCell}`; // Return the range in A1:B2 format
+};
+
 // Function to copy a worksheet to a new spreadsheet
 export const copyWorksheetToNewSpreadsheet = async (
   sourceSpreadsheetId,
@@ -49,28 +62,21 @@ export const copyWorksheetToNewSpreadsheet = async (
     throw new Error("No data found in the existing worksheet.");
   }
 
-  // Step 7: Write the data to the newly created worksheet
-  const newRangeAddress = `${newWorksheetName}!A1`; // Specify the starting cell for the data
+  const cellValuesData = existingData.values;
 
-  // Filter out empty rows
-  const filteredData = existingData.values.filter((row) =>
-    row.some((cell) => cell !== "")
-  );
+  // Step 7: Write the data to the newly created worksheet
+  const newRangeAddress = getCellRange(cellValuesData);
 
   // Log the new range address and the filtered data being sent
   console.log(`Writing to range: ${newRangeAddress}`);
-  console.log("Data to write:", filteredData);
-  console.log("New worksheet ID:", newWorksheet.id);
 
   await client
     .api(
-      `/drives/${process.env.ONEDRIVE_ID}/items/${newSpreadsheetId}/workbook/worksheets('${newWorksheet.id}')/range(address='${newRangeAddress}')`
+      `/drives/${process.env.ONEDRIVE_ID}/items/${newSpreadsheetId}/workbook/worksheets/${newWorksheetName}/range(address='${newRangeAddress}')`
     )
     .patch({
-      values: filteredData, // Write the filtered data to the new worksheet
+      values: cellValuesData, // Write the filtered data to the new worksheet
     });
-
-  return newSpreadsheetId;
 };
 
 // Call the function
