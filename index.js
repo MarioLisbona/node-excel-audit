@@ -1,7 +1,7 @@
 import { getGraphClient } from "./lib/msAuth.js";
 import { processTestingSheet, updateRfiSpreadsheet } from "./lib/sheets.js";
 import { emailRfiToClient } from "./emailRFISheet.js";
-import { copyWorksheetToNewSpreadsheet } from "./createClientRFISpreadsheet.js";
+import { copyWorksheetToNewWorkbook } from "./createClientRFISpreadsheet.js";
 import dotenv from "dotenv";
 
 // load the environment variables
@@ -33,7 +33,7 @@ await updateRfiSpreadsheet(
 );
 
 // Call the function
-await copyWorksheetToNewSpreadsheet(
+await copyWorksheetToNewWorkbook(
   process.env.SOURCE_WORKBOOK_ID,
   process.env.SOURCE_WORKSHEET_NAME,
   process.env.NEW_WORKBOOK_NAME,

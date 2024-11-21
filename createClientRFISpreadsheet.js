@@ -2,7 +2,7 @@ import { getGraphClient } from "./lib/msAuth.js";
 import { getCellRange } from "./lib/utils.js";
 
 // Function to copy a worksheet to a new spreadsheet
-export const copyWorksheetToNewSpreadsheet = async (
+export const copyWorksheetToNewWorkbook = async (
   sourceWorkbookId,
   sourceWorksheetName,
   newWorkbookId,
