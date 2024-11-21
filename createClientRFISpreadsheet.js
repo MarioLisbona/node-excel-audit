@@ -5,14 +5,14 @@ export const copyWorksheetToNewWorkbook = async (
   client,
   sourceWorkbookId,
   sourceWorksheetName,
-  newWorkbookId,
+  clientName,
   newWorksheetName
 ) => {
   // Create a new Excel spreadsheet
   const newSpreadsheet = await client
     .api(`/drives/${process.env.ONEDRIVE_ID}/root/children`)
     .post({
-      name: `${newWorkbookId}.xlsx`, // Name for the new Excel file
+      name: `RFI Spreadsheet - ${clientName}.xlsx`, // Name for the new Excel file
       file: {}, // Specify that this is a file
       "@microsoft.graph.conflictBehavior": "rename", // Handle conflicts by renaming
     });
