@@ -1,7 +1,7 @@
 import { getGraphClient } from "./lib/msAuth.js";
 import { getFileIdByName } from "./returnFileIdfromFileName.js";
-
-export const createClientRfiFromTemplate = async (fileId) => {
+import { getCellRange } from "./lib/utils.js";
+export const createClientRfiFromTemplate = async () => {
   const client = await getGraphClient({ cache: false });
 
   // Workbook - "els-testing.xlsx"
@@ -20,6 +20,8 @@ export const createClientRfiFromTemplate = async (fileId) => {
     )
     .get();
 
+  const rfiCellData = existingData.values;
+
   // Create a new worksheet in the existing workbook
   await client
     .api(
@@ -27,5 +29,21 @@ export const createClientRfiFromTemplate = async (fileId) => {
     )
     .post({
       name: destinationWorksheetName, // Pass the name of the new worksheet in the request body
+      "@microsoft.graph.conflictBehavior": "rename", // Handle conflicts by renaming
     });
+
+  const destinationRange = getCellRange(rfiCellData);
+
+  // Write the data to the new worksheet
+  await client
+    .api(
+      `/drives/${process.env.ONEDRIVE_ID}/items/${destinationWorkbookId}/workbook/worksheets/${destinationWorksheetName}/range(address='${destinationRange}')`
+    )
+    .patch({
+      values: rfiCellData, // Write the filtered data to the new worksheet
+    });
+
+  return destinationWorkbookId, destinationWorksheetName;
 };
+
+createClientRfiFromTemplate();
