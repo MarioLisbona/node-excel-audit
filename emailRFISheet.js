@@ -27,7 +27,7 @@ const downloadFile = async (accessToken, fileId) => {
     }
   );
 
-  const filePath = path.join(__dirname, process.env.RFI_SPREADSHEET_NAME);
+  const filePath = path.join(__dirname, process.env.WORKSHEET_NAME_TO_EMAIL);
   const writer = fs.createWriteStream(filePath);
   response.data.pipe(writer);
 
@@ -53,7 +53,7 @@ const sendEmailWithAttachment = async (filePath) => {
     text: "Hi. please find the attached RFI response spreadsheet. Add the response to the ACP Response column and send it back to the us.",
     attachments: [
       {
-        filename: process.env.RFI_SPREADSHEET_NAME,
+        filename: process.env.WORKSHEET_NAME_TO_EMAIL,
         path: filePath,
       },
     ],
@@ -70,7 +70,7 @@ const sendEmailWithAttachment = async (filePath) => {
 const main = async () => {
   try {
     const accessToken = await getAccessToken(); // Use your existing function
-    const fileId = process.env.RFI_SPREADSHEET_ID; // Replace with your actual file ID
+    const fileId = process.env.WORKBOOK_ID_TO_EMAIL; // Replace with your actual file ID
     const filePath = await downloadFile(accessToken, fileId);
     await sendEmailWithAttachment(filePath);
   } catch (error) {
