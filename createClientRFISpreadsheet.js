@@ -3,14 +3,12 @@ import { getCellRange } from "./lib/utils.js";
 
 // Function to copy a worksheet to a new spreadsheet
 export const copyWorksheetToNewWorkbook = async (
+  client,
   sourceWorkbookId,
   sourceWorksheetName,
   newWorkbookId,
   newWorksheetName
 ) => {
-  // Create a Graph client with caching disabled
-  const client = await getGraphClient({ cache: false });
-
   // Create a new Excel spreadsheet
   const newSpreadsheet = await client
     .api(`/drives/${process.env.ONEDRIVE_ID}/root/children`)
@@ -42,7 +40,7 @@ export const copyWorksheetToNewWorkbook = async (
   // Extract the data from the source worksheet
   const existingData = await client
     .api(
-      `/drives/${process.env.ONEDRIVE_ID}/items/${sourceWorkbookId}/workbook/worksheets/${sourceWorksheetName}/usedRange`
+      `/drives/${process.env.ONEDRIVE_ID}/items/${sourceWorkbookId}/workbook/worksheets/${sourceWorksheetName}/range(address='A7:B46')`
     )
     .get();
 
