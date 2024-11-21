@@ -68,11 +68,3 @@ export const copyWorksheetToNewSpreadsheet = async (
       values: cellValuesData, // Write the filtered data to the new worksheet
     });
 };
-
-// Call the function
-copyWorksheetToNewSpreadsheet(
-  process.env.SOURCE_WORKBOOK_ID,
-  process.env.SOURCE_WORKSHEET_NAME,
-  process.env.NEW_WORKBOOK_NAME,
-  process.env.NEW_WORKSHEET_NAME
-);
