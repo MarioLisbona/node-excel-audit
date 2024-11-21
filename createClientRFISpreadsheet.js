@@ -1,17 +1,5 @@
 import { getGraphClient } from "./lib/msAuth.js";
-
-// Function to calculate the cell range based on the data array
-const getCellRange = (data) => {
-  const startCell = "A1"; // Starting cell
-  const numRows = data.length; // Number of rows in the data
-  const numCols = data[0] ? data[0].length : 0; // Number of columns in the first row
-
-  // Calculate the end cell based on the number of rows and columns
-  const endCell =
-    String.fromCharCode("A".charCodeAt(0) + numCols - 1) + numRows;
-
-  return `${startCell}:${endCell}`; // Return the range in A1:B2 format
-};
+import { getCellRange } from "./lib/utils.js";
 
 // Function to copy a worksheet to a new spreadsheet
 export const copyWorksheetToNewSpreadsheet = async (
@@ -23,7 +11,7 @@ export const copyWorksheetToNewSpreadsheet = async (
   // Create a Graph client with caching disabled
   const client = await getGraphClient({ cache: false });
 
-  // Step 1: Create a new Excel file in the root of the drive
+  // Create a new Excel spreadsheet
   const newSpreadsheet = await client
     .api(`/drives/${process.env.ONEDRIVE_ID}/root/children`)
     .post({
@@ -32,10 +20,10 @@ export const copyWorksheetToNewSpreadsheet = async (
       "@microsoft.graph.conflictBehavior": "rename", // Handle conflicts by renaming
     });
 
-  // Step 2: Get the ID of the new spreadsheet
+  // Extract the ID of the new spreadsheet
   const newSpreadsheetId = newSpreadsheet.id;
 
-  // Step 6: Create a new worksheet with the desired name
+  // Create a new worksheet in the new spreadsheet
   const newWorksheet = await client
     .api(
       `/drives/${process.env.ONEDRIVE_ID}/items/${newSpreadsheetId}/workbook/worksheets`
@@ -44,14 +32,14 @@ export const copyWorksheetToNewSpreadsheet = async (
       name: newWorksheetName, // Name for the new worksheet
     });
 
-  // Step 5: Delete "Sheet1" in the new spreadsheet
+  // Delete the default "Sheet1" in the new spreadsheet
   await client
     .api(
       `/drives/${process.env.ONEDRIVE_ID}/items/${newSpreadsheetId}/workbook/worksheets('Sheet1')`
     )
     .delete();
 
-  // Step 3: Get the data from the existing worksheet
+  // Extract the data from the source worksheet
   const existingData = await client
     .api(
       `/drives/${process.env.ONEDRIVE_ID}/items/${sourceSpreadsheetId}/workbook/worksheets/${sourceWorksheetName}/usedRange`
@@ -65,12 +53,13 @@ export const copyWorksheetToNewSpreadsheet = async (
 
   const cellValuesData = existingData.values;
 
-  // Step 7: Write the data to the newly created worksheet
+  // Calculate the cell range for the data
   const newRangeAddress = getCellRange(cellValuesData);
 
-  // Log the new range address and the filtered data being sent
+  // Log the new range address
   console.log(`Writing to range: ${newRangeAddress}`);
 
+  // Write the data to the new worksheet
   await client
     .api(
       `/drives/${process.env.ONEDRIVE_ID}/items/${newSpreadsheetId}/workbook/worksheets/${newWorksheetName}/range(address='${newRangeAddress}')`
