@@ -20,7 +20,8 @@ export const copyWorksheetToNewSpreadsheet = async (
   newWorksheetName,
   newSpreadsheetName
 ) => {
-  const client = await getGraphClient();
+  // Create a Graph client with caching disabled
+  const client = await getGraphClient({ cache: false });
 
   // Step 1: Create a new Excel file in the root of the drive
   const newSpreadsheet = await client
