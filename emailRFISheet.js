@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 import { getAccessToken } from "./lib/msAuth.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import { getFileIdByName } from "./returnFileIdfromFileName.js";
 dotenv.config();
 
 // Assuming you have a working getAccessToken function
@@ -68,13 +67,9 @@ const sendEmailWithAttachment = async (filePath) => {
   }
 };
 
-export const emailRfiToClient = async () => {
+export const emailRfiToClient = async (fileId) => {
   try {
     const accessToken = await getAccessToken(); // Use your existing function
-    const fileId = await getFileIdByName(
-      process.env.ONEDRIVE_ID,
-      process.env.WORKSHEET_NAME_TO_EMAIL
-    ); // Replace with your actual file ID
     console.log(fileId);
     const filePath = await downloadFile(accessToken, fileId);
     await sendEmailWithAttachment(filePath);

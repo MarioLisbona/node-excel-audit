@@ -65,4 +65,6 @@ export const copyWorksheetToNewWorkbook = async (
     .patch({
       values: cellValuesData, // Write the filtered data to the new worksheet
     });
+
+  return newSpreadsheetId;
 };
