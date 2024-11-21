@@ -3,10 +3,10 @@ import { getCellRange } from "./lib/utils.js";
 
 // Function to copy a worksheet to a new spreadsheet
 export const copyWorksheetToNewSpreadsheet = async (
-  sourceSpreadsheetId,
+  sourceWorkbookId,
   sourceWorksheetName,
-  newWorksheetName,
-  newSpreadsheetName
+  newWorkbookId,
+  newWorksheetName
 ) => {
   // Create a Graph client with caching disabled
   const client = await getGraphClient({ cache: false });
@@ -15,7 +15,7 @@ export const copyWorksheetToNewSpreadsheet = async (
   const newSpreadsheet = await client
     .api(`/drives/${process.env.ONEDRIVE_ID}/root/children`)
     .post({
-      name: `${newSpreadsheetName}.xlsx`, // Name for the new Excel file
+      name: `${newWorkbookId}.xlsx`, // Name for the new Excel file
       file: {}, // Specify that this is a file
       "@microsoft.graph.conflictBehavior": "rename", // Handle conflicts by renaming
     });
@@ -42,7 +42,7 @@ export const copyWorksheetToNewSpreadsheet = async (
   // Extract the data from the source worksheet
   const existingData = await client
     .api(
-      `/drives/${process.env.ONEDRIVE_ID}/items/${sourceSpreadsheetId}/workbook/worksheets/${sourceWorksheetName}/usedRange`
+      `/drives/${process.env.ONEDRIVE_ID}/items/${sourceWorkbookId}/workbook/worksheets/${sourceWorksheetName}/usedRange`
     )
     .get();
 
@@ -71,8 +71,8 @@ export const copyWorksheetToNewSpreadsheet = async (
 
 // Call the function
 copyWorksheetToNewSpreadsheet(
-  process.env.SOURCE_SPREADSHEET_ID,
+  process.env.SOURCE_WORKBOOK_ID,
   process.env.SOURCE_WORKSHEET_NAME,
-  process.env.NEW_WORKSHEET_NAME,
-  process.env.NEW_SPREADSHEET_NAME
+  process.env.NEW_WORKBOOK_NAME,
+  process.env.NEW_WORKSHEET_NAME
 );
