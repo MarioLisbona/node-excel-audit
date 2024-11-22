@@ -37,7 +37,7 @@ const downloadFile = async (accessToken, fileId) => {
   });
 };
 
-const sendEmailWithAttachment = async (filePath) => {
+const sendEmailWithAttachment = async (filePath, fileName) => {
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -53,7 +53,7 @@ const sendEmailWithAttachment = async (filePath) => {
     text: "Hi. please find the attached RFI response spreadsheet. Add the response to the ACP Response column and send it back to the us.",
     attachments: [
       {
-        filename: process.env.WORKSHEET_NAME_TO_EMAIL,
+        filename: fileName,
         path: filePath,
       },
     ],
@@ -67,12 +67,12 @@ const sendEmailWithAttachment = async (filePath) => {
   }
 };
 
-export const emailRfiToClient = async (fileId) => {
+export const emailRfiToClient = async (fileId, fileName) => {
   try {
     const accessToken = await getAccessToken(); // Use your existing function
     console.log(fileId);
     const filePath = await downloadFile(accessToken, fileId);
-    await sendEmailWithAttachment(filePath);
+    await sendEmailWithAttachment(filePath, fileName);
   } catch (error) {
     console.error("Error: ", error);
   }

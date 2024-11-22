@@ -33,12 +33,12 @@ await updateRfiSpreadsheet(
 );
 
 // Call the function
-const fileId = await copyWorksheetToNewWorkbook(
+const { newWorkbookId, newWorkbookName } = await copyWorksheetToNewWorkbook(
   client,
   process.env.SOURCE_WORKBOOK_ID,
   process.env.SOURCE_WORKSHEET_NAME,
-  "Mario",
+  "Muz",
   process.env.NEW_WORKSHEET_NAME
 );
 
-await emailRfiToClient(fileId);
+await emailRfiToClient(newWorkbookId, newWorkbookName);

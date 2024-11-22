@@ -17,11 +17,12 @@ export const copyWorksheetToNewWorkbook = async (
       "@microsoft.graph.conflictBehavior": "rename", // Handle conflicts by renaming
     });
 
-  // Extract the ID of the new spreadsheet
+  // Extract the ID and name of the new workbook
   const newWorkbookId = newWorkbook.id;
+  const newWorkbookName = newWorkbook.name;
 
   // Create a new worksheet in the new spreadsheet
-  const newWorksheet = await client
+  await client
     .api(
       `/drives/${process.env.ONEDRIVE_ID}/items/${newWorkbookId}/workbook/worksheets`
     )
@@ -48,6 +49,7 @@ export const copyWorksheetToNewWorkbook = async (
     throw new Error("No data found in the existing worksheet.");
   }
 
+  // Extract the cell values from the existing data
   const cellValuesData = existingData.values;
 
   // Calculate the cell range for the data
@@ -65,5 +67,5 @@ export const copyWorksheetToNewWorkbook = async (
       values: cellValuesData, // Write the filtered data to the new worksheet
     });
 
-  return newWorkbookId;
+  return { newWorkbookId, newWorkbookName };
 };
