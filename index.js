@@ -2,9 +2,9 @@ import { getGraphClient } from "./lib/msAuth.js";
 import {
   processTestingSheet,
   updateRfiSpreadsheet,
+  copyWorksheetToNewWorkbook,
 } from "./lib/worksheetProcessing.js";
 import { emailRfiToClient } from "./emailRFISheet.js";
-import { copyWorksheetToNewWorkbook } from "./createClientRFISpreadsheet.js";
 import dotenv from "dotenv";
 
 // load the environment variables
