@@ -37,7 +37,7 @@ const fileId = await copyWorksheetToNewWorkbook(
   client,
   process.env.SOURCE_WORKBOOK_ID,
   process.env.SOURCE_WORKSHEET_NAME,
-  "XXYY",
+  "Mario",
   process.env.NEW_WORKSHEET_NAME
 );
 

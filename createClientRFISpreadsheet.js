@@ -9,7 +9,7 @@ export const copyWorksheetToNewWorkbook = async (
   newWorksheetName
 ) => {
   // Create a new Excel spreadsheet
-  const newSpreadsheet = await client
+  const newWorkbook = await client
     .api(`/drives/${process.env.ONEDRIVE_ID}/root/children`)
     .post({
       name: `RFI Spreadsheet - ${clientName}.xlsx`, // Name for the new Excel file
@@ -18,12 +18,12 @@ export const copyWorksheetToNewWorkbook = async (
     });
 
   // Extract the ID of the new spreadsheet
-  const newSpreadsheetId = newSpreadsheet.id;
+  const newWorkbookId = newWorkbook.id;
 
   // Create a new worksheet in the new spreadsheet
   const newWorksheet = await client
     .api(
-      `/drives/${process.env.ONEDRIVE_ID}/items/${newSpreadsheetId}/workbook/worksheets`
+      `/drives/${process.env.ONEDRIVE_ID}/items/${newWorkbookId}/workbook/worksheets`
     )
     .post({
       name: newWorksheetName, // Name for the new worksheet
@@ -32,7 +32,7 @@ export const copyWorksheetToNewWorkbook = async (
   // Delete the default "Sheet1" in the new spreadsheet
   await client
     .api(
-      `/drives/${process.env.ONEDRIVE_ID}/items/${newSpreadsheetId}/workbook/worksheets('Sheet1')`
+      `/drives/${process.env.ONEDRIVE_ID}/items/${newWorkbookId}/workbook/worksheets('Sheet1')`
     )
     .delete();
 
@@ -59,11 +59,11 @@ export const copyWorksheetToNewWorkbook = async (
   // Write the data to the new worksheet
   await client
     .api(
-      `/drives/${process.env.ONEDRIVE_ID}/items/${newSpreadsheetId}/workbook/worksheets/${newWorksheetName}/range(address='${newRangeAddress}')`
+      `/drives/${process.env.ONEDRIVE_ID}/items/${newWorkbookId}/workbook/worksheets/${newWorksheetName}/range(address='${newRangeAddress}')`
     )
     .patch({
       values: cellValuesData, // Write the filtered data to the new worksheet
     });
 
-  return newSpreadsheetId;
+  return newWorkbookId;
 };
