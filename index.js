@@ -23,7 +23,7 @@ const updatedRfiCellData = await processTestingSheet(
   client,
   userId,
   workbookId,
-  "Testing small data"
+  "Testing"
 );
 
 // Update the RFI spreadsheet with the updated RFI cell data
@@ -40,7 +40,7 @@ const { newWorkbookId, newWorkbookName } = await copyWorksheetToNewWorkbook(
   client,
   process.env.SOURCE_WORKBOOK_ID,
   process.env.SOURCE_WORKSHEET_NAME,
-  "Mario Lisbona",
+  "Mario Lisbona Dev",
   process.env.NEW_WORKSHEET_NAME
 );
 
