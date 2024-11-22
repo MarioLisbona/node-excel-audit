@@ -1,4 +1,4 @@
 .env
 node_modules
-updatedRfiCellData.json
-updatedRfiCellTestData.json
+*.json
+*.xlsx

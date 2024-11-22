@@ -1,5 +1,10 @@
 import { getGraphClient } from "./lib/msAuth.js";
-import { processTestingSheet, updateRfiSpreadsheet } from "./lib/sheets.js";
+import {
+  processTestingSheet,
+  updateRfiSpreadsheet,
+  copyWorksheetToNewWorkbook,
+} from "./lib/worksheetProcessing.js";
+import { emailRfiToClient } from "./lib/email.js";
 import dotenv from "dotenv";
 
 // load the environment variables
@@ -22,10 +27,21 @@ const updatedRfiCellData = await processTestingSheet(
 );
 
 // Update the RFI spreadsheet with the updated RFI cell data
-updateRfiSpreadsheet(
+await updateRfiSpreadsheet(
   client,
   userId,
   workbookId,
   "RFI Spreadsheet",
   updatedRfiCellData
 );
+
+// Call the function
+const { newWorkbookId, newWorkbookName } = await copyWorksheetToNewWorkbook(
+  client,
+  process.env.SOURCE_WORKBOOK_ID,
+  process.env.SOURCE_WORKSHEET_NAME,
+  "Mario Lisbona Dev",
+  process.env.NEW_WORKSHEET_NAME
+);
+
+await emailRfiToClient(newWorkbookId, newWorkbookName);
