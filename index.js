@@ -4,7 +4,7 @@ import {
   updateRfiSpreadsheet,
   copyWorksheetToNewWorkbook,
 } from "./lib/worksheetProcessing.js";
-import { emailRfiToClient } from "./emailRFISheet.js";
+import { emailRfiToClient } from "./lib/email.js";
 import dotenv from "dotenv";
 
 // load the environment variables
@@ -23,7 +23,7 @@ const updatedRfiCellData = await processTestingSheet(
   client,
   userId,
   workbookId,
-  "Testing"
+  "Testing small data"
 );
 
 // Update the RFI spreadsheet with the updated RFI cell data
