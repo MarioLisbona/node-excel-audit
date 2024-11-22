@@ -14,7 +14,7 @@ dotenv.config();
 // Create a Graph client with caching disabled
 const client = await getGraphClient({ cache: false });
 
-// Workbook ID and User ID
+// use filename to get workbook ID
 const workbookId = await getFileIdByName(
   process.env.ONEDRIVE_ID,
   "els-testing-client-XXXX.xlsx"
