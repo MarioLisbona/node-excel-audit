@@ -45,4 +45,4 @@ const { newWorkbookId, newWorkbookName } = await copyWorksheetToNewWorkbook(
   process.env.NEW_WORKSHEET_NAME
 );
 
-// await emailRfiToClient(newWorkbookId, newWorkbookName);
+await emailRfiToClient(newWorkbookId, newWorkbookName);
