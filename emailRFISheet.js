@@ -8,15 +8,12 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 dotenv.config();
 
-// Assuming you have a working getAccessToken function
-// const getAccessToken = async () => { ... };
-
-// Get the directory name from the current module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 const downloadFile = async (accessToken, fileId) => {
   const driveId = process.env.ONEDRIVE_ID;
+
+  // Get the directory name from the current module
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
   const response = await axios.get(
     `https://graph.microsoft.com/v1.0/drives/${driveId}/items/${fileId}/content`,
     {
