@@ -53,7 +53,7 @@ export const copyWorksheetToNewWorkbook = async (
   const cellValuesData = existingData.values;
 
   // Calculate the cell range for the data
-  const newRangeAddress = getCellRange(cellValuesData);
+  const newRangeAddress = getCellRange(cellValuesData, "A7");
 
   // Log the new range address
   console.log(`Writing to range: ${newRangeAddress}`);
