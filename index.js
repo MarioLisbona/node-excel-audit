@@ -16,6 +16,7 @@ const client = await getGraphClient({ cache: false });
 // Workbook ID and User ID
 const workbookId = process.env.WORKBOOK_ID;
 const userId = process.env.USER_ID;
+const testingSheetName = "Testing";
 
 // Process the testing sheet and return the updated RFI cell data
 // Incliudes the
@@ -23,7 +24,7 @@ const updatedRfiCellData = await processTestingSheet(
   client,
   userId,
   workbookId,
-  "Testing"
+  testingSheetName
 );
 
 // Update the RFI spreadsheet with the updated RFI cell data
@@ -44,4 +45,4 @@ const { newWorkbookId, newWorkbookName } = await copyWorksheetToNewWorkbook(
   process.env.NEW_WORKSHEET_NAME
 );
 
-await emailRfiToClient(newWorkbookId, newWorkbookName);
+// await emailRfiToClient(newWorkbookId, newWorkbookName);
