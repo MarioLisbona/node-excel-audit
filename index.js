@@ -6,6 +6,7 @@ import {
 } from "./lib/worksheetProcessing.js";
 import { emailRfiToClient } from "./lib/email.js";
 import dotenv from "dotenv";
+import { getFileIdByName } from "./lib/oneDrive.js";
 
 // load the environment variables
 dotenv.config();
@@ -14,7 +15,11 @@ dotenv.config();
 const client = await getGraphClient({ cache: false });
 
 // Workbook ID and User ID
-const workbookId = process.env.WORKBOOK_ID;
+const workbookId = await getFileIdByName(
+  process.env.ONEDRIVE_ID,
+  "els-testing-client-XXXX.xlsx"
+  // "els-testing.xlsx"
+);
 const userId = process.env.USER_ID;
 const testingSheetName = "Testing";
 
@@ -39,7 +44,7 @@ await updateRfiSpreadsheet(
 // Call the function
 const { newWorkbookId, newWorkbookName } = await copyWorksheetToNewWorkbook(
   client,
-  process.env.SOURCE_WORKBOOK_ID,
+  workbookId,
   process.env.SOURCE_WORKSHEET_NAME,
   "Mario Lisbona Dev",
   process.env.NEW_WORKSHEET_NAME
