@@ -43,15 +43,8 @@ if (updatedRfiCellData.length > 0) {
     updatedRfiCellData
   );
 
-  // // Call the function
-  // const { newWorkbookId, newWorkbookName } = await copyWorksheetToNewWorkbook(
-  //   client,
-  //   workbookId,
-  //   process.env.SOURCE_WORKSHEET_NAME,
-  //   "Mario Lisbona Dev",
-  //   process.env.NEW_WORKSHEET_NAME
-  // );
-
+  // Copy the data in the updated RFI spreadsheet to a new workbook
+  // using the template and email it to the client
   const { newWorkbookId, newWorkbookName } =
     await copyWorksheetToClientWorkbook(
       client,
