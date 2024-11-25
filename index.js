@@ -32,22 +32,26 @@ const updatedRfiCellData = await processTestingSheet(
   testingSheetName
 );
 
-// Update the RFI spreadsheet with the updated RFI cell data
-await updateRfiSpreadsheet(
-  client,
-  userId,
-  workbookId,
-  "RFI Spreadsheet",
-  updatedRfiCellData
-);
+if (updatedRfiCellData.length > 0) {
+  // Update the RFI spreadsheet with the updated RFI cell data
+  await updateRfiSpreadsheet(
+    client,
+    userId,
+    workbookId,
+    "RFI Spreadsheet",
+    updatedRfiCellData
+  );
 
-// Call the function
-const { newWorkbookId, newWorkbookName } = await copyWorksheetToNewWorkbook(
-  client,
-  workbookId,
-  process.env.SOURCE_WORKSHEET_NAME,
-  "Mario Lisbona Dev",
-  process.env.NEW_WORKSHEET_NAME
-);
+  // Call the function
+  const { newWorkbookId, newWorkbookName } = await copyWorksheetToNewWorkbook(
+    client,
+    workbookId,
+    process.env.SOURCE_WORKSHEET_NAME,
+    "Mario Lisbona Dev",
+    process.env.NEW_WORKSHEET_NAME
+  );
 
-await emailRfiToClient(newWorkbookId, newWorkbookName);
+  await emailRfiToClient(newWorkbookId, newWorkbookName);
+} else {
+  console.log("No RFI data to process");
+}
