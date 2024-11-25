@@ -32,7 +32,7 @@ export const copyFileInOneDrive = async (userId, fileId, baseFileName) => {
   const folderId = "root";
 
   // Generate a unique filename
-  const newFileName = await generateUniqueFilename(
+  const newWorkbookName = await generateUniqueFilename(
     userId,
     folderId,
     baseFileName
@@ -45,13 +45,13 @@ export const copyFileInOneDrive = async (userId, fileId, baseFileName) => {
       parentReference: {
         id: folderId,
       },
-      name: newFileName,
+      name: newWorkbookName,
     });
 
   // Get the ID of the newly copied workbook
   const newWorkbookId = await getFileIdByName(
     process.env.ONEDRIVE_ID,
-    newFileName
+    newWorkbookName
   );
 
   // Step 2: Rename the worksheet to "RFI Responses"
@@ -63,26 +63,7 @@ export const copyFileInOneDrive = async (userId, fileId, baseFileName) => {
       name: "RFI Responses",
     });
 
-  console.log(`File copied to new file: ${newFileName}`);
+  console.log(`File copied to new file: ${newWorkbookName}`);
+
+  return { newWorkbookId, newWorkbookName };
 };
-
-const main = async () => {
-  const userId = process.env.USER_ID;
-  // use filename to get workbook ID
-  const workbookId = await getFileIdByName(
-    process.env.ONEDRIVE_ID,
-    "RFI Client Template.xlsx"
-  );
-  const clientName = "Test Client";
-
-  console.log({ workbookId });
-
-  // Usage
-  copyFileInOneDrive(
-    userId,
-    workbookId,
-    `RFI Responses - ${clientName}.xlsx` // New file name
-  );
-};
-
-main();
