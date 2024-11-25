@@ -1,6 +1,6 @@
 import { getGraphClient } from "./lib/msAuth.js";
 import {
-  processTestingSheet,
+  processTesting,
   updateRfiSpreadsheet,
   copyWorksheetToNewWorkbook,
 } from "./lib/worksheetProcessing.js";
@@ -25,29 +25,34 @@ const testingSheetName = "Testing";
 
 // Process the testing sheet and return the updated RFI cell data
 // Incliudes the
-const updatedRfiCellData = await processTestingSheet(
+const updatedRfiCellData = await processTesting(
   client,
   userId,
   workbookId,
   testingSheetName
 );
 
-// Update the RFI spreadsheet with the updated RFI cell data
-await updateRfiSpreadsheet(
-  client,
-  userId,
-  workbookId,
-  "RFI Spreadsheet",
-  updatedRfiCellData
-);
+// only update the RFI spreadsheet, copy ane email if there is RFI data to process
+if (updatedRfiCellData.length > 0) {
+  // Update the RFI spreadsheet with the updated RFI cell data
+  await updateRfiSpreadsheet(
+    client,
+    userId,
+    workbookId,
+    "RFI Spreadsheet",
+    updatedRfiCellData
+  );
 
-// Call the function
-const { newWorkbookId, newWorkbookName } = await copyWorksheetToNewWorkbook(
-  client,
-  workbookId,
-  process.env.SOURCE_WORKSHEET_NAME,
-  "Mario Lisbona Dev",
-  process.env.NEW_WORKSHEET_NAME
-);
+  // Call the function
+  const { newWorkbookId, newWorkbookName } = await copyWorksheetToNewWorkbook(
+    client,
+    workbookId,
+    process.env.SOURCE_WORKSHEET_NAME,
+    "Mario Lisbona Dev",
+    process.env.NEW_WORKSHEET_NAME
+  );
 
-await emailRfiToClient(newWorkbookId, newWorkbookName);
+  await emailRfiToClient(newWorkbookId, newWorkbookName);
+} else {
+  console.log("No RFI data to process");
+}
