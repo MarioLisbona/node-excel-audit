@@ -29,7 +29,7 @@ const generateUniqueFilename = async (userId, folderId, baseName) => {
 // Function to copy a file in OneDrive
 export const copyFileInOneDrive = async (userId, fileId, baseFileName) => {
   const client = await getGraphClient();
-  const folderId = "root"; // or specify the folder ID if needed
+  const folderId = "root";
 
   // Generate a unique filename
   const newFileName = await generateUniqueFilename(
@@ -38,14 +38,30 @@ export const copyFileInOneDrive = async (userId, fileId, baseFileName) => {
     baseFileName
   );
 
-  // Step 1: Copy the file with conflict behavior
-  await client.api(`/users/${userId}/drive/items/${fileId}/copy`).post({
-    parentReference: {
-      id: folderId,
-    },
-    name: newFileName,
-    "@microsoft.graph.conflictBehavior": "rename", // Handle conflicts by renaming
-  });
+  // Step 1: Copy the RFI Client Template workbook
+  const copiedWorkbook = await client
+    .api(`/users/${userId}/drive/items/${fileId}/copy`)
+    .post({
+      parentReference: {
+        id: folderId,
+      },
+      name: newFileName,
+    });
+
+  // Get the ID of the newly copied workbook
+  const newWorkbookId = await getFileIdByName(
+    process.env.ONEDRIVE_ID,
+    newFileName
+  );
+
+  // Step 2: Rename the worksheet to "RFI Responses"
+  await client
+    .api(
+      `/users/${userId}/drive/items/${newWorkbookId}/workbook/worksheets/RFI Spreadsheet Template`
+    )
+    .patch({
+      name: "RFI Responses",
+    });
 
   console.log(`File copied to new file: ${newFileName}`);
 };
@@ -55,7 +71,7 @@ const main = async () => {
   // use filename to get workbook ID
   const workbookId = await getFileIdByName(
     process.env.ONEDRIVE_ID,
-    "Templates.xlsx"
+    "RFI Client Template.xlsx"
   );
   const clientName = "Test Client";
 
