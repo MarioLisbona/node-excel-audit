@@ -1,16 +1,50 @@
 import { getGraphClient, getAccessToken } from "./lib/msAuth.js";
 import { getFileIdByName } from "./lib/oneDrive.js";
 
-// Function to copy a file in OneDrive
-export const copyRfiTemplate = async (userId, workbookId, newFileName) => {
+// Function to check if a file with the same name exists
+const checkFileExists = async (userId, folderId, fileName) => {
   const client = await getGraphClient();
+  const response = await client
+    .api(`/users/${userId}/drive/items/${folderId}/children`)
+    .get();
 
-  // Step 1: Copy the file
-  await client.api(`/users/${userId}/drive/items/${workbookId}/copy`).post({
+  return response.value.some((file) => file.name === fileName);
+};
+
+// Function to generate a unique filename
+const generateUniqueFilename = async (userId, folderId, baseName) => {
+  let uniqueName = baseName;
+  let counter = 1;
+
+  // Check if the base name already exists
+  while (await checkFileExists(userId, folderId, uniqueName)) {
+    // Generate a new name with a counter
+    uniqueName = `${baseName.replace(/(\.[\w\d]+)$/, ` (${counter})$1`)}`; // Append counter before the file extension
+    counter++;
+  }
+
+  return uniqueName;
+};
+
+// Function to copy a file in OneDrive
+export const copyFileInOneDrive = async (userId, fileId, baseFileName) => {
+  const client = await getGraphClient();
+  const folderId = "root"; // or specify the folder ID if needed
+
+  // Generate a unique filename
+  const newFileName = await generateUniqueFilename(
+    userId,
+    folderId,
+    baseFileName
+  );
+
+  // Step 1: Copy the file with conflict behavior
+  await client.api(`/users/${userId}/drive/items/${fileId}/copy`).post({
     parentReference: {
-      id: "root", // or specify the folder ID if needed
+      id: folderId,
     },
     name: newFileName,
+    "@microsoft.graph.conflictBehavior": "rename", // Handle conflicts by renaming
   });
 
   console.log(`File copied to new file: ${newFileName}`);
@@ -28,7 +62,7 @@ const main = async () => {
   console.log({ workbookId });
 
   // Usage
-  copyRfiTemplate(
+  copyFileInOneDrive(
     userId,
     workbookId,
     `RFI Responses - ${clientName}.xlsx` // New file name
