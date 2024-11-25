@@ -1,6 +1,6 @@
 import { getGraphClient } from "./lib/msAuth.js";
 import {
-  processTestingSheet,
+  processTesting,
   updateRfiSpreadsheet,
   copyWorksheetToNewWorkbook,
 } from "./lib/worksheetProcessing.js";
@@ -25,7 +25,7 @@ const testingSheetName = "Testing";
 
 // Process the testing sheet and return the updated RFI cell data
 // Incliudes the
-const updatedRfiCellData = await processTestingSheet(
+const updatedRfiCellData = await processTesting(
   client,
   userId,
   workbookId,
