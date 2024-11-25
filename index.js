@@ -32,6 +32,7 @@ const updatedRfiCellData = await processTesting(
   testingSheetName
 );
 
+// only update the RFI spreadsheet, copy ane email if there is RFI data to process
 if (updatedRfiCellData.length > 0) {
   // Update the RFI spreadsheet with the updated RFI cell data
   await updateRfiSpreadsheet(
