@@ -32,5 +32,4 @@ const workbookId = "01FNQELGG3VHA4YXYQMZCKASTZIB7R46IS";
 const sheetName = "delete-spreadsheet";
 const ranges = ["A7:F16", "A18:F100"]; // Array of ranges to clear
 
-// Example usage
-clearWorksheetRange(userId, workbookId, sheetName, ranges);
+// clearWorksheetRange(userId, workbookId, sheetName, ranges);
