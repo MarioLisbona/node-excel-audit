@@ -54,7 +54,7 @@ if (updatedRfiCellData.length > 0) {
       "Mario Lisbona Dev"
     );
 
-  await emailRfiToClient(newWorkbookId, newWorkbookName);
+  // await emailRfiToClient(newWorkbookId, newWorkbookName);
 } else {
   console.log("No RFI data to process");
 }
