@@ -4,13 +4,11 @@ import { openAiQuery } from "./lib/openAI.js";
 const clientResponse = {
   issuesIdentified:
     "The auditor noted that a CCEW has not been attached. Please provide the CCEW.",
-  projectsAffected: ["J2288990"],
   response: "We cannot locate the form at the moment. We will upload it ASAP.",
 };
 const clientResponse1 = {
   issuesIdentified:
     "The auditor noted that a CCEW has not been attached. Please provide the CCEW.",
-  projectsAffected: ["J2288990"],
   response:
     "We check with our admin team and they have confirmed that the CCEW has been uploaded to the evidence pack.",
 };
@@ -43,17 +41,19 @@ Provide additional information in the auditorNotes field if the response does no
 
 The closedOut field should be either "Y" or "N".
 
-Asses the "issuesIdentified" and "response" fields in the knowledge base and create relationships between the combination of these two fields and the "auditorNotes" field. Use this relationship to fill in the auditorNotes field.
+Your task is to analyze the knowledge base and identify correlations and patterns between the issuesIdentified and acpResponse attributes and their relationships to the auditorNotes and closedOut attributes.
 
-Add the auditorNotes, closedOut to the clientResponse JSON object.
+Use these correlations to infer and generate the values for auditorNotes and closedOut when only issuesIdentified and acpResponse are provided. Ensure consistency with the patterns observed in the knowledge base.
 
-**Only return the updated clientResponse JSON object, nothing else.**
+You will be provided with an incomplete json object where only issuesIdentified and acpResponse are given, generate detailed auditorNotes using the specified status codes (F, M, or RFI) and relevant context, and determine the appropriate value for closedOut (Y or N).
 
 Here is the knowledge base:
 ${JSON.stringify(responseKnowledgeBase)}
 
 Here is the response from the client:
-${JSON.stringify(clientResponse)}
+${JSON.stringify(clientResponse1)}
+
+**Return the completed json object only. DO NOT use markdown formatting.**
 
 `;
 
