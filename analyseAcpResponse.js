@@ -1,5 +1,6 @@
 import { responseKnowledgeBase } from "./lib/constants.js";
 import { openAiQuery } from "./lib/openAI.js";
+import { azureGptQuery } from "./lib/azureGpt.cjs";
 
 const clientResponse = {
   issuesIdentified:
@@ -51,12 +52,14 @@ Here is the knowledge base:
 ${JSON.stringify(responseKnowledgeBase)}
 
 Here is the response from the client:
-${JSON.stringify(clientResponse1)}
+${JSON.stringify(clientResponse)}
 
 **Return the completed json object only. DO NOT use markdown formatting.**
 
 `;
 
-const response = await openAiQuery(prompt);
+const openAiResponse = await openAiQuery(prompt);
+const azureGptResponse = await azureGptQuery(prompt);
 
-console.log(JSON.parse(response));
+console.log("OpenAI Response: ", JSON.parse(openAiResponse));
+console.log("Azure GPT Response: ", JSON.parse(azureGptResponse));
