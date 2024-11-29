@@ -1,18 +1,6 @@
-import { responseKnowledgeBase } from "./lib/constants.js";
+import { responseKnowledgeBase, clientResponses } from "./lib/constants.js";
 import { openAiQuery } from "./lib/openAI.js";
 import { azureGptQuery } from "./lib/azureGpt.cjs";
-
-const clientResponse = {
-  issuesIdentified:
-    "The auditor noted that a CCEW has not been attached. Please provide the CCEW.",
-  response: "We cannot locate the form at the moment. We will upload it ASAP.",
-};
-const clientResponse1 = {
-  issuesIdentified:
-    "The auditor noted that a CCEW has not been attached. Please provide the CCEW.",
-  response:
-    "We check with our admin team and they have confirmed that the CCEW has been uploaded to the evidence pack.",
-};
 
 const prompt = `
 You are a helpful assistant that can help me analyze responses from clients that are being audited.
@@ -51,8 +39,8 @@ You will be provided with an incomplete json object where only issuesIdentified 
 Here is the knowledge base:
 ${JSON.stringify(responseKnowledgeBase)}
 
-Here is the response from the client:
-${JSON.stringify(clientResponse)}
+Here are the responses from the client:
+${JSON.stringify(clientResponses)}
 
 **Return the completed json object only. DO NOT use markdown formatting.**
 
