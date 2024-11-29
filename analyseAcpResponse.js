@@ -1,12 +1,18 @@
-import { responseKnowledgeBase } from "./knowledgeBase.js";
+import { responseKnowledgeBase } from "./lib/constants.js";
 import { openAiQuery } from "./lib/openAI.js";
 
 const clientResponse = {
   issuesIdentified:
     "The auditor noted that a CCEW has not been attached. Please provide the CCEW.",
   projectsAffected: ["J2288990"],
+  response: "We cannot locate the form at the moment. We will upload it ASAP.",
+};
+const clientResponse1 = {
+  issuesIdentified:
+    "The auditor noted that a CCEW has not been attached. Please provide the CCEW.",
+  projectsAffected: ["J2288990"],
   response:
-    "the form has been uploaded to the evidence pack. But it seems that you cannot see it?",
+    "We check with our admin team and they have confirmed that the CCEW has been uploaded to the evidence pack.",
 };
 
 const prompt = `
@@ -48,7 +54,6 @@ ${JSON.stringify(responseKnowledgeBase)}
 
 Here is the response from the client:
 ${JSON.stringify(clientResponse)}
-
 
 `;
 
