@@ -48,10 +48,9 @@ const replacePlaceholders = async (fileBuffer, data) => {
       delimiters: { start: "{{", end: "}}" },
     });
 
-    doc.setData(data);
-
     try {
-      doc.render();
+      // Pass data directly to render() instead of using setData()
+      doc.render(data);
     } catch (error) {
       if (error.properties && error.properties.errors instanceof Array) {
         const errorMessages = error.properties.errors
