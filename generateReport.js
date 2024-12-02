@@ -1,4 +1,5 @@
 import { getGraphClient } from "./lib/msAuth.js";
+import { extractResponsesForReport } from "./lib/worksheetProcessing.js";
 import {
   downloadFile,
   uploadFile,
@@ -21,25 +22,43 @@ const main = async () => {
       process.exit(1);
     }
 
-    // Data for placeholder replacement
-    const data = {
-      clientName: "John Doe",
-      parra1: "Thank you for reaching out to us. We appreciate your business.",
-      parra2:
-        "If you have any questions, feel free to contact us at support@example.com.",
-      companyName: "Your Company Name",
-      address: "123 Street Address, City, ST ZIP Code",
-      phone: "(555) 555-5555",
-      email: "contact@example.com",
-      website: "www.example.com",
-    };
-
     // Step 1: Download the template from OneDrive
     const templateBuffer = await downloadFile(
       graphClient,
       userId,
       templateFileId
     );
+
+    // Step 2: Extract the column data from the RFI spreadsheet
+    const columnData = await extractResponsesForReport(
+      graphClient,
+      userId,
+      "01FNQELGFWWY3333PH6ZFJG5GCYY3Y22YV",
+      "RFI Spreadsheet"
+    );
+
+    // Format the findings for the report
+    const formattedFindings = columnData
+      .filter((item) => item && item.trim()) // Remove empty or whitespace-only entries
+      .map((item, index) => `${index + 1}. ${item.trim()}`); // Add numbering to each finding
+
+    console.log({ columnData });
+
+    // Data for placeholder replacement
+    const data = {
+      clientName: "Mario Lisbona",
+      auditorName: "Energy Link Services",
+      companyName: "MLD",
+      address: "123 Street Address, City, ST ZIP Code",
+      phone: "(555) 555-5555",
+      email: "contact@example.com",
+      website: "www.example.com",
+      items: [
+        { name: "John", age: 30 },
+        { name: "Jane", age: 25 },
+      ],
+      columnData: formattedFindings,
+    };
 
     // Step 2: Replace placeholders in the template
     const updatedDocumentBuffer = await replacePlaceholders(
