@@ -13,7 +13,8 @@ const main = async () => {
 
     // Input parameters (replace with actual values or arguments)
     const userId = process.env.USER_ID;
-    const templateFileId = "01FNQELGER3IH53IAQ4JCYCVCPQARA7SAZ"; // Replace with the file ID of your Word doc template
+    // const templateFileId = "01FNQELGER3IH53IAQ4JCYCVCPQARA7SAZ"; // Replace with the file ID of your Word doc template
+    const templateFileId = "01FNQELGEXFNT2IFI6AFHIZIEME6KZWEGQ"; // Replace with the file ID of your Word doc template
     const folderId = "01FNQELGGVWQQ6RELQ2BE3ETXPHL463HB4"; // Replace with the destination folder ID
     const newFileName = process.argv[2]; // New file name provided as a command-line argument
 
@@ -40,9 +41,9 @@ const main = async () => {
     // Format the findings for the report
     const formattedFindings = columnData
       .filter((item) => item && item.trim()) // Remove empty or whitespace-only entries
-      .map((item, index) => `${index + 1}. ${item.trim()}`); // Add numbering to each finding
+      .map((item, index) => `${index + 1}. ${item.trim()}`); // Add numbering and single newline
 
-    console.log({ columnData });
+    console.log({ columnData, formattedFindings });
 
     // Data for placeholder replacement
     const data = {
