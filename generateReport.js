@@ -3,7 +3,7 @@ import { extractResponsesForReport } from "./lib/worksheetProcessing.js";
 import {
   downloadFile,
   uploadFile,
-  replacePlaceholders,
+  updatePlaceholders,
 } from "./lib/oneDrive.js";
 
 // Main function
@@ -13,7 +13,7 @@ const main = async () => {
 
     // Input parameters (replace with actual values or arguments)
     const userId = process.env.USER_ID;
-    const templateFileId = "01FNQELGEXFNT2IFI6AFHIZIEME6KZWEGQ"; // Replace with the file ID of your Word doc template
+    const templateFileId = "01FNQELGER3IH53IAQ4JCYCVCPQARA7SAZ"; // Replace with the file ID of your Word doc template
     const folderId = "01FNQELGGVWQQ6RELQ2BE3ETXPHL463HB4"; // Replace with the destination folder ID
     const newFileName = process.argv[2]; // New file name provided as a command-line argument
 
@@ -46,6 +46,8 @@ const main = async () => {
 
     // Data for placeholder replacement
     const data = {
+      date: "December 2, 2024",
+      projectName: "Water heater replacement",
       clientName: "Mario Lisbona",
       auditorName: "Energy Link Services",
       companyName: "MLD",
@@ -61,7 +63,7 @@ const main = async () => {
     };
 
     // Step 2: Replace placeholders in the template
-    const updatedDocumentBuffer = await replacePlaceholders(
+    const updatedDocumentBuffer = await updatePlaceholders(
       templateBuffer,
       data
     );
