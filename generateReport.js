@@ -1,72 +1,9 @@
 import { getGraphClient } from "./lib/msAuth.js";
-import fs from "fs/promises";
-import PizZip from "pizzip";
-import Docxtemplater from "docxtemplater";
-
-// Function to download a file from OneDrive
-const downloadFile = async (graphClient, userId, fileId) => {
-  try {
-    const fileUrl = `https://graph.microsoft.com/v1.0/users/${userId}/drive/items/${fileId}/content`;
-    const response = await graphClient
-      .api(fileUrl)
-      .responseType("arraybuffer")
-      .get();
-
-    return Buffer.from(response);
-  } catch (error) {
-    console.error("Error downloading file:", error);
-    throw error;
-  }
-};
-
-// Function to upload a file to OneDrive
-const uploadFile = async (
-  graphClient,
-  userId,
-  folderId,
-  fileName,
-  fileBuffer
-) => {
-  try {
-    const uploadUrl = `https://graph.microsoft.com/v1.0/users/${userId}/drive/items/${folderId}:/${fileName}:/content`;
-    await graphClient.api(uploadUrl).put(fileBuffer);
-    console.log(`File uploaded successfully: ${fileName}`);
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    throw error;
-  }
-};
-
-// Function to replace placeholders in a Word document
-const replacePlaceholders = async (fileBuffer, data) => {
-  try {
-    const zip = new PizZip(fileBuffer);
-
-    const doc = new Docxtemplater(zip, {
-      paragraphLoop: true,
-      linebreaks: true,
-      delimiters: { start: "{{", end: "}}" },
-    });
-
-    try {
-      // Pass data directly to render() instead of using setData()
-      doc.render(data);
-    } catch (error) {
-      if (error.properties && error.properties.errors instanceof Array) {
-        const errorMessages = error.properties.errors
-          .map((e) => `Error in template: ${e.properties.explanation}`)
-          .join("\n");
-        console.error("Template Error:", errorMessages);
-      }
-      throw error;
-    }
-
-    return doc.getZip().generate({ type: "nodebuffer" });
-  } catch (error) {
-    console.error("Error processing template:", error);
-    throw error;
-  }
-};
+import {
+  downloadFile,
+  uploadFile,
+  replacePlaceholders,
+} from "./lib/oneDrive.js";
 
 // Main function
 const main = async () => {
